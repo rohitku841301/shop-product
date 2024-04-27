@@ -90,6 +90,36 @@ class User {
       );
   }
 
+  addOrder() {
+    const db = getDb();
+
+    return this.getCart()
+    .then(products=>{
+      const order = {
+        items: products,
+        user:{
+          _id: new ObjectId(this._id),
+          name:this.name
+        }
+      }
+      return db.collection('order').insertOne(order);
+    })
+    .then(result=>{
+      this.cart = {item:[]}
+     return db
+      .collection('users')
+      .updateOne(
+        { _id: new ObjectId(this._id) },
+        { $set: { cart: {items: []} } }
+      );
+    })
+  }
+
+  getOrders(){
+    const db = getDb();
+    return db.collection('order').find({'user._id': new ObjectId(this._id)}).toArray();
+  }
+
   static findById(userId) {
     console.log("user", userId);
     const db = getDb();

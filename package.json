@@ -22,6 +22,7 @@
     "ignore-by-default": "^2.1.0",
     "merge-descriptors": "^2.0.0",
     "mongodb": "^6.5.0",
+    "mongoose": "^8.3.2",
     "mysql2": "^3.9.7",
     "pug": "^3.0.2",
     "sequelize": "^6.37.3"

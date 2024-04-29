@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const User = require("../models/user")
 const mongoose = require("mongoose")
 
 exports.getProducts = (req, res, next) => {
@@ -61,16 +62,48 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  console.log("proreq", prodId);
-  Product.findById(prodId)
-    .then(product => {
-      console.log("abhi", product);
-      return req.user.addToCart(product);
-    })
-    .then(result => {
-      console.log(result);
-      res.redirect('/cart');
-    });
+
+  console.log("user",req.user);
+
+  const cartProductIndex = req.user.cart.items.findIndex((item)=>{
+    return item==prodId;
+  })
+
+    const cartItems = req.user.cart.items;
+  console.log("cartitem", cartItems);
+  if(cartProductIndex===-1){
+    cartItems.push({productId:prodId, quantity:1})
+  }else{
+    cartItems.push({productId:prodId, quantity:cartProductIndex+1})
+  }
+
+  console.log("cart",cartItems);
+  // const updatedCart = {
+  //   items
+  // }
+
+  User.findByIdAndUpdate(req.user._id, {$set: {"cart.items":cartItems}}).then((result)=>{
+    console.log(result);
+  }).catch(error=>{
+    console.log(error);
+  })
+
+
+
+
+
+
+
+  // console.log("proreq", prodId);
+  // Product.findById(prodId)
+  //   .then(product => {
+  //     console.log("abhi", product);
+  //     return req.user.addToCart(product);
+  //   })
+  //   .then(result => {
+  //     console.log(result);
+  //     res.redirect('/cart');
+  //   });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {

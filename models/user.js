@@ -13,7 +13,7 @@ const userSchema = new Schema({
   cart:{
     items:[
       {
-        productId: {type: Schema.Types.ObjectId, require: true},
+        productId: {type: Schema.Types.ObjectId, require: true, ref:"Product"},
         quantity: {type:Number, require:true}
       }
     ]
@@ -56,6 +56,11 @@ userSchema.methods.deleteItemFromCart = function(productId){
         });
         this.cart.items = updatedCartItems;
         return this.save();
+}
+
+userSchema.methods.clearCart = function(){
+  this.cart = {items: []};
+  return this.save();
 }
 
 module.exports = mongoose.model("User", userSchema);
